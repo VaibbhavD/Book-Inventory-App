@@ -4,7 +4,7 @@ import BookTable from "../components/BookTable";
 import UpdateBookModal from "../components/UpdateFormModal";
 
 function Home() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState();
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -52,13 +52,14 @@ function Home() {
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
-        <BookTable book={books} setSelectedBook={setSelectedBook} setIsModalOpen={setIsModalOpen} />
+        <BookTable book={books} setSelectedBook={setSelectedBook} setIsModalOpen={setIsModalOpen} setBooks={setBooks} />
       )}
         {isModalOpen && (
         <UpdateBookModal
           book={selectedBook}
           closeModal={() => setIsModalOpen(false)}
-          refreshBooks={() => setBooks([...books])}
+          setBooks={setBooks}
+          
         />
       )}
     </div>
