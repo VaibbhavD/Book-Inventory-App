@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Popup from "./Popup";
 
-const BookTable = ({ book, setIsModalOpen, setSelectedBook, setBooks }) => {
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); // State for delete confirmation
+const BookTable = ({ setIsModalOpen, setSelectedBook, setBooks, book }) => {
+  const [selectedBookToDelete, setSelectedBookToDelete] = useState(null);
 
   const handleDelete = async () => {
     const data = JSON.parse(localStorage.getItem("books"));
-    const updatedBooks = data.filter((Book) => Book.id !== book.id);
+    const updatedBooks = data.filter(
+      (book) => book.id !== selectedBookToDelete.id
+    );
     setBooks(updatedBooks);
     if (updatedBooks.length === 0) {
       localStorage.removeItem("books");
@@ -17,11 +19,16 @@ const BookTable = ({ book, setIsModalOpen, setSelectedBook, setBooks }) => {
       localStorage.setItem("books", JSON.stringify(updatedBooks));
     }
     toast.success("Book deleted successfully");
+    setSelectedBookToDelete(null);
   };
 
   const handleUpdate = (book) => {
     setIsModalOpen(true);
     setSelectedBook(book);
+  };
+
+  const handleOpenDeleteConfirm = (book) => {
+    setSelectedBookToDelete(book);
   };
 
   return (
@@ -69,10 +76,10 @@ const BookTable = ({ book, setIsModalOpen, setSelectedBook, setBooks }) => {
                     <FaEdit className="text-xl hover:scale-110" />
                   </button>
                   <button
-                    onClick={() => setIsDeleteConfirmOpen(true)}
+                    onClick={() => handleOpenDeleteConfirm(book)}
                     className="text-red-500 hover:text-red-700"
                   >
-                    <FaTrash className="text-lg hover:scale-110"/>
+                    <FaTrash className="text-lg hover:scale-110" />
                   </button>
                 </td>
               </tr>
@@ -80,10 +87,12 @@ const BookTable = ({ book, setIsModalOpen, setSelectedBook, setBooks }) => {
           </tbody>
         </table>
       </div>
-      {isDeleteConfirmOpen && (
+
+      {selectedBookToDelete && (
         <Popup
           confirmDelete={handleDelete}
-          setIsDeleteConfirmOpen={setIsDeleteConfirmOpen}
+          setIsDeleteConfirmOpen={setSelectedBookToDelete}
+          book={selectedBookToDelete}
         />
       )}
     </>

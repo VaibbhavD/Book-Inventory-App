@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa";
@@ -9,40 +9,46 @@ const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
+  const[allbooks,setallBooks]=useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); // State for delete confirmation
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); 
+
+  const fetchBook = useCallback(() => {
+    try {
+      const bookData = JSON.parse(localStorage.getItem("books")) || [];
+      setallBooks(bookData);
+      const selectedBook = bookData.find((bookItem) => Number(bookItem.id) === Number(id));
+
+      if (!selectedBook) {
+        toast.error("Book not found");
+        return;
+      }
+      setBook(selectedBook);
+    } catch (error) {
+      toast.error("Failed to fetch book details");
+    }
+  }, [isModalOpen,id]);
 
   useEffect(() => {
-    const getBook = () => {
-      try {
-        const bookData = JSON.parse(localStorage.getItem("books")) || [];
-        const selectedBook = bookData.find((bookItem) => Number(bookItem.id) === Number(id));
+    fetchBook();
+  }, [id,isModalOpen]);
 
-        if (!selectedBook) {
-          toast.error("Book not found");
-          return;
-        }
-        setBook(selectedBook);
-      } catch (error) {
-        toast.error("Failed to fetch book details");
-      }
-    };
-
-    getBook();
-  }, [id]);
+  const updateLocalStorage = useCallback((updatedBooks) => {
+    localStorage.setItem("books", JSON.stringify(updatedBooks));
+  }, []);
 
   const confirmDelete = () => {
     try {
       const bookData = JSON.parse(localStorage.getItem("books")) || [];
       const updatedBooks = bookData.filter((bookItem) => Number(bookItem.id) !== Number(id));
-      localStorage.setItem("books", JSON.stringify(updatedBooks));
+      updateLocalStorage(updatedBooks);
 
       toast.success("Book deleted successfully");
-      navigate("/"); // Redirect to home after deletion
+      navigate("/"); 
     } catch (error) {
       toast.error("Failed to delete book");
     }
-    setIsDeleteConfirmOpen(false); // Close confirmation modal
+    setIsDeleteConfirmOpen(false); 
   };
 
   return (
@@ -84,7 +90,7 @@ const BookDetail = () => {
             <strong>Book Type:</strong> {book.bookType}
           </p>
           <p className="text-gray-700 mb-2">
-            <strong>Total Available:</strong> {book.totalAvailable}
+            <strong>Publisher</strong> {book.publisher}
           </p>
           <p className="text-gray-700 mb-2">
             <strong>Reviews:</strong> {book.reviews}
@@ -97,13 +103,13 @@ const BookDetail = () => {
             <UpdateBookModal
               book={book}
               closeModal={() => setIsModalOpen(false)}
-              refreshBooks={(updatedBook) => setBook(updatedBook)}
+              setBooks={setallBooks}
             />
           )}
 
           {/* Delete Confirmation Modal */}
           {isDeleteConfirmOpen && (
-          <Popup confirmDelete={confirmDelete} setIsDeleteConfirmOpen={setIsDeleteConfirmOpen} />
+            <Popup confirmDelete={confirmDelete} setIsDeleteConfirmOpen={setIsDeleteConfirmOpen} />
           )}
         </div>
       ) : (
@@ -113,4 +119,4 @@ const BookDetail = () => {
   );
 };
 
-export default BookDetail;
+export default React.memo(BookDetail);

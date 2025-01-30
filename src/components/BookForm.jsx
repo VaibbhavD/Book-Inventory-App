@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+// Memoizing book types to prevent unnecessary re-renders
 const bookTypes = [
   "Fiction",
   "Non-Fiction",
@@ -25,17 +26,14 @@ const BookForm = () => {
     reviews: 0,
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
-  const [rating, setRating] = useState(0);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -44,25 +42,36 @@ const BookForm = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setFormData({ ...formData, image: reader.result }); // Store base64 string
-        setImagePreview(reader.result);
+        setFormData((prev) => ({
+          ...prev,
+          image: reader.result, // Storing base64 string directly in formData
+        }));
       };
     }
   };
 
   const handleRating = (index) => {
-    setRating(index);
-    setFormData({ ...formData, reviews: index });
+    setFormData((prev) => ({
+      ...prev,
+      reviews: index, // Directly updating the reviews in formData
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const booksdata = JSON.parse(localStorage.getItem("books"));
-    booksdata.push({ ...formData, id: booksdata.length });
-    localStorage.setItem("books", JSON.stringify(booksdata));
-    navigate("/")
-    toast.success("Book added successfully");
-  };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        const storedBooks = JSON.parse(localStorage.getItem("books")) || [];
+        storedBooks.push({ ...formData, id: storedBooks.length });
+        localStorage.setItem("books", JSON.stringify(storedBooks));
+        navigate("/");
+        toast.success("Book added successfully");
+      } catch (error) {
+        toast.error("Failed to add book");
+      }
+    },
+    [formData, navigate]
+  );
 
   return (
     <div className="max-w-lg mx-auto mt-4 p-6 bg-white shadow-xl rounded-lg border border-gray-200">
@@ -91,18 +100,16 @@ const BookForm = () => {
           required
         />
 
-        <label className="block text-gray-600 font-semibold">
-          Upload Book Cover:
-        </label>
+        <label className="block text-gray-600 font-semibold">Upload Book Cover:</label>
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           className="w-full p-2 border rounded-lg bg-gray-100"
         />
-        {imagePreview && (
+        {formData.image && (
           <img
-            src={imagePreview}
+            src={formData.image}
             alt="Preview"
             className="mt-2 w-24 h-32 object-cover rounded-lg shadow-md"
           />
@@ -113,7 +120,6 @@ const BookForm = () => {
           name="publishedDate"
           value={formData.publishedDate}
           onChange={handleChange}
-          placeholder="Published Date"
           className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
           required
         />
@@ -158,9 +164,7 @@ const BookForm = () => {
           {[1, 2, 3, 4, 5].map((star) => (
             <FaStar
               key={star}
-              className={`cursor-pointer text-2xl ${
-                rating >= star ? "text-yellow-500" : "text-gray-300"
-              }`}
+              className={`cursor-pointer text-2xl ${formData.reviews >= star ? "text-yellow-500" : "text-gray-300"}`}
               onClick={() => handleRating(star)}
             />
           ))}

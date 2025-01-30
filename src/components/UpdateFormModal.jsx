@@ -25,14 +25,13 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
     reviews: book.reviews,
     bookType: book.bookType,
   });
-
   const [imagePreview, setImagePreview] = useState(book.image);
   const [rating, setRating] = useState(book.reviews);
 
   useEffect(() => {
-    document.body.classList.add("overflow-hidden"); // Prevent background scrolling when modal is open
+    document.body.classList.add("overflow-hidden"); 
     return () => {
-      document.body.classList.remove("overflow-hidden"); // Restore scrolling when modal is closed
+      document.body.classList.remove("overflow-hidden");
     };
   }, []);
 
@@ -44,13 +43,13 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const render= new FileReader();
+      const render = new FileReader();
       render.readAsDataURL(file);
       render.onloadend = () => {
         setFormData({ ...formData, image: render.result });
         setImagePreview(render.result);
+      };
     }
-  }
   };
 
   const handleRating = (index) => {
@@ -60,9 +59,8 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const booksData = JSON.parse(localStorage.getItem("books")) || [];
-
     const updatedBooks = booksData.map((item) =>
       item.id === formData.id ? { ...item, ...formData } : item
     );
@@ -70,7 +68,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
     setBooks(updatedBooks);
     localStorage.setItem("books", JSON.stringify(updatedBooks));
     toast.success("Book updated successfully");
-    closeModal()
+    closeModal();
   };
 
   return (
@@ -82,10 +80,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="title"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="title" className="block text-gray-600 font-semibold">
               Book Title
             </label>
             <input
@@ -101,10 +96,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="author"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="author" className="block text-gray-600 font-semibold">
               Author Name
             </label>
             <input
@@ -120,10 +112,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="image"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="image" className="block text-gray-600 font-semibold">
               Update Book Cover
             </label>
             <input
@@ -144,28 +133,22 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="publishedDate"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="publishedDate" className="block text-gray-600 font-semibold">
               Published Date
             </label>
             <input
-              type="text"
+              type="date"
               name="publishedDate"
               id="publishedDate"
               value={formData.publishedDate}
               onChange={handleChange}
-              placeholder="Published Date"
+              placeholder="YYYY-MM-DD"
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="publisher"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="publisher" className="block text-gray-600 font-semibold">
               Publisher
             </label>
             <input
@@ -180,10 +163,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="description"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="description" className="block text-gray-600 font-semibold">
               Book Description
             </label>
             <textarea
@@ -199,10 +179,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           </div>
 
           <div>
-            <label
-              htmlFor="bookType"
-              className="block text-gray-600 font-semibold"
-            >
+            <label htmlFor="bookType" className="block text-gray-600 font-semibold">
               Book Type
             </label>
             <select
