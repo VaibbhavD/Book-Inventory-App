@@ -20,6 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/add-book" element={<BookForm />} />
           <Route path="/book/:id" element={<BookDetail />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </Suspense>
       <ToastContainer />
