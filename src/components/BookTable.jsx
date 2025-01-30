@@ -5,20 +5,18 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import UpdateBookModal from "./UpdateFormModal";
 import axios from "axios";
 
-const BookTable = ({book}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBook, setSelectedBook] = useState(null);
+const BookTable = ({ book, setIsModalOpen, setSelectedBook }) => {
   const [books, setBooks] = useState(book);
 
-  console.log(books)
-  console.log(book)
+  console.log(books);
+  console.log(book);
   const handleDelete = async (id) => {
     toast.success("Book deleted successfully");
     console.log(id);
   };
   const handleUpdate = (book) => {
-   setIsModalOpen(true);
-   setSelectedBook(book);
+    setIsModalOpen(true);
+    setSelectedBook(book);
   };
 
   return (
@@ -72,13 +70,6 @@ const BookTable = ({book}) => {
           ))}
         </tbody>
       </table>
-      {isModalOpen && (
-        <UpdateBookModal
-        book={selectedBook}
-        closeModal={() => setIsModalOpen(false)}
-        refreshBooks={() => setBooks([...books])}
-        />
-      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 
@@ -10,6 +10,7 @@ const bookTypes = [
   "Sci-Fi",
   "Fantasy",
   "Self-Help",
+  "Computers"
 ];
 
 const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
@@ -27,6 +28,13 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
 
   const [imagePreview, setImagePreview] = useState(book.image);
   const [rating, setRating] = useState(book.reviews);
+
+  useEffect(() => {
+    document.body.classList.add("overflow-hidden"); // Prevent background scrolling when modal is open
+    return () => {
+      document.body.classList.remove("overflow-hidden"); // Restore scrolling when modal is closed
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,21 +56,19 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic (you would typically call an API here)
     toast.success("Book updated successfully");
-    refreshBooks();  // Refresh the list after the update
-    closeModal(); // Close the modal after submission
+    refreshBooks();
+    closeModal();
   };
 
   return (
-    <div className="fixed inset-0 pt-56 flex justify-center items-center overflow-auto bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 max-w-xl w-full shadow-lg pt-10 sm:p-4">
+    <div className="fixed inset-0 flex justify-center items-center overflow-auto bg-black bg-opacity-50">
+      <div className="bg-white mt-96 rounded-lg p-6 max-w-xl w-full shadow-lg pt-10 sm:p-4">
         <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
           📘 Update Book
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Title Input */}
           <div>
             <label htmlFor="title" className="block text-gray-600 font-semibold">
               Book Title
@@ -79,7 +85,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             />
           </div>
 
-          {/* Author Input */}
           <div>
             <label htmlFor="author" className="block text-gray-600 font-semibold">
               Author Name
@@ -96,7 +101,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             />
           </div>
 
-          {/* Image Upload */}
           <div>
             <label htmlFor="image" className="block text-gray-600 font-semibold">
               Update Book Cover
@@ -118,7 +122,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             )}
           </div>
 
-          {/* Published Date Input */}
           <div>
             <label htmlFor="publishedDate" className="block text-gray-600 font-semibold">
               Published Date
@@ -134,7 +137,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             />
           </div>
 
-          {/* Publisher Input */}
           <div>
             <label htmlFor="publisher" className="block text-gray-600 font-semibold">
               Publisher
@@ -150,7 +152,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             />
           </div>
 
-          {/* Description */}
           <div>
             <label htmlFor="description" className="block text-gray-600 font-semibold">
               Book Description
@@ -167,7 +168,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             />
           </div>
 
-          {/* Book Type Dropdown */}
           <div>
             <label htmlFor="bookType" className="block text-gray-600 font-semibold">
               Book Type
@@ -189,7 +189,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             </select>
           </div>
 
-          {/* Rating */}
           <div className="flex items-center space-x-1">
             <span className="text-gray-600 font-semibold">Rating:</span>
             {[1, 2, 3, 4, 5].map((star) => (
@@ -203,7 +202,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
             ))}
           </div>
 
-          {/* Submit Button */}
           <div className="flex justify-between mt-4">
             <button
               type="submit"
@@ -214,7 +212,6 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
         </form>
 
-        {/* Cancel Button */}
         <button
           onClick={closeModal}
           className="mt-4 text-red-500 w-full text-center block hover:underline"
