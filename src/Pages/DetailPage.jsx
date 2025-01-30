@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaEdit, FaTrash,FaArrowLeft } from "react-icons/fa";
-import UpdateBookModal from "../components/UpdateFormModal"; // Ensure this component exists
+import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa";
+import UpdateBookModal from "../components/UpdateFormModal"; 
+import Popup from "../components/Popup";
 
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); // State for delete confirmation
 
   useEffect(() => {
     const getBook = () => {
       try {
         const bookData = JSON.parse(localStorage.getItem("books")) || [];
-        const selectedBook = bookData.find(
-          (bookItem) =>
-            console.log(bookItem.id, id) || bookItem.id === Number(id)
-        );
+        const selectedBook = bookData.find((bookItem) => Number(bookItem.id) === Number(id));
 
         if (!selectedBook) {
           toast.error("Book not found");
@@ -32,10 +31,10 @@ const BookDetail = () => {
     getBook();
   }, [id]);
 
-  const handleDelete = () => {
+  const confirmDelete = () => {
     try {
       const bookData = JSON.parse(localStorage.getItem("books")) || [];
-      const updatedBooks = bookData.filter((bookItem) => bookItem.id !== id);
+      const updatedBooks = bookData.filter((bookItem) => Number(bookItem.id) !== Number(id));
       localStorage.setItem("books", JSON.stringify(updatedBooks));
 
       toast.success("Book deleted successfully");
@@ -43,23 +42,21 @@ const BookDetail = () => {
     } catch (error) {
       toast.error("Failed to delete book");
     }
+    setIsDeleteConfirmOpen(false); // Close confirmation modal
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6">
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-6 relative">
       {book ? (
         <div>
           <div className="flex space-x-4 my-2 justify-between">
-            <div>
             <button
-                onClick={() => navigate(-1)}
-                className="text-primary rounded-full bg-gray-100 px-2 py-2 flex items-center space-x-2"
-              >
-                <FaArrowLeft />
-              </button>
-            </div>
+              onClick={() => navigate(-1)}
+              className="text-primary rounded-full bg-gray-100 px-2 py-2 flex items-center space-x-2"
+            >
+              <FaArrowLeft />
+            </button>
             <div className="flex space-x-2">
-              {" "}
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="border-2 border-yellow-500 text-yellow-500 px-4 py-2 rounded flex items-center space-x-2"
@@ -67,7 +64,7 @@ const BookDetail = () => {
                 <FaEdit />
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => setIsDeleteConfirmOpen(true)}
                 className="border-2 border-red-500 text-red-500 px-4 py-2 rounded flex items-center space-x-2"
               >
                 <FaTrash />
@@ -102,6 +99,11 @@ const BookDetail = () => {
               closeModal={() => setIsModalOpen(false)}
               refreshBooks={(updatedBook) => setBook(updatedBook)}
             />
+          )}
+
+          {/* Delete Confirmation Modal */}
+          {isDeleteConfirmOpen && (
+          <Popup confirmDelete={confirmDelete} setIsDeleteConfirmOpen={setIsDeleteConfirmOpen} />
           )}
         </div>
       ) : (
