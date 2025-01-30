@@ -1,22 +1,34 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const bookTypes = ["Fiction", "Non-Fiction", "Biography", "Mystery", "Sci-Fi", "Fantasy", "Self-Help"];
+const bookTypes = [
+  "Fiction",
+  "Non-Fiction",
+  "Biography",
+  "Mystery",
+  "Sci-Fi",
+  "Fantasy",
+  "Self-Help",
+];
 
 const BookForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     image: null,
-    reviews: 0,
-    bookType: "",
-    totalAvailable: "",
+    publishedDate: "",
+    publisher: "",
     description: "",
+    bookType: "",
+    reviews: 0,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
   const [rating, setRating] = useState(0);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,8 +41,12 @@ const BookForm = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, image: file });
-      setImagePreview(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setFormData({ ...formData, image: reader.result }); // Store base64 string
+        setImagePreview(reader.result);
+      };
     }
   };
 
@@ -41,16 +57,20 @@ const BookForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const booksdata = JSON.parse(localStorage.getItem("books"));
+    booksdata.push({ ...formData, id: booksdata.length });
+    localStorage.setItem("books", JSON.stringify(booksdata));
+    navigate("/")
     toast.success("Book added successfully");
-    console.log(formData)
   };
 
   return (
     <div className="max-w-lg mx-auto mt-4 p-6 bg-white shadow-xl rounded-lg border border-gray-200">
-      <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">📚 Add New Book</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
+        📚 Add New Book
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title Input */}
         <input
           type="text"
           name="title"
@@ -61,7 +81,6 @@ const BookForm = () => {
           required
         />
 
-        {/* Author Input */}
         <input
           type="text"
           name="author"
@@ -72,8 +91,9 @@ const BookForm = () => {
           required
         />
 
-        {/* Image Upload */}
-        <label className="block text-gray-600 font-semibold">Upload Book Cover:</label>
+        <label className="block text-gray-600 font-semibold">
+          Upload Book Cover:
+        </label>
         <input
           type="file"
           accept="image/*"
@@ -81,10 +101,33 @@ const BookForm = () => {
           className="w-full p-2 border rounded-lg bg-gray-100"
         />
         {imagePreview && (
-          <img src={imagePreview} alt="Preview" className="mt-2 w-24 h-32 object-cover rounded-lg shadow-md" />
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="mt-2 w-24 h-32 object-cover rounded-lg shadow-md"
+          />
         )}
 
-        {/* Description */}
+        <input
+          type="date"
+          name="publishedDate"
+          value={formData.publishedDate}
+          onChange={handleChange}
+          placeholder="Published Date"
+          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+          required
+        />
+
+        <input
+          type="text"
+          name="publisher"
+          value={formData.publisher}
+          onChange={handleChange}
+          placeholder="Publisher"
+          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+          required
+        />
+
         <textarea
           name="description"
           value={formData.description}
@@ -95,7 +138,6 @@ const BookForm = () => {
           required
         />
 
-        {/* Book Type Dropdown */}
         <select
           name="bookType"
           value={formData.bookType}
@@ -111,19 +153,6 @@ const BookForm = () => {
           ))}
         </select>
 
-        {/* Total Available Input */}
-        <input
-          type="number"
-          name="totalAvailable"
-          min={0}
-          value={formData.totalAvailable}
-          onChange={handleChange}
-          placeholder="Total Available Copies"
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-          required
-        />
-
-        {/* Star Rating */}
         <div className="flex items-center space-x-1">
           <span className="text-gray-600 font-semibold">Rating:</span>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -137,7 +166,6 @@ const BookForm = () => {
           ))}
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-primary text-white font-semibold py-3 rounded-lg shadow-md transition"
