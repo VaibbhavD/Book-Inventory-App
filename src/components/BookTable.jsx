@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import UpdateBookModal from "./UpdateFormModal";
-import axios from "axios";
 
-const BookTable = ({ book, setIsModalOpen, setSelectedBook }) => {
-  const [books, setBooks] = useState(book);
-
-  console.log(books);
-  console.log(book);
+const BookTable = ({ book, setIsModalOpen, setSelectedBook, setBooks }) => {
   const handleDelete = async (id) => {
+    const data = JSON.parse(localStorage.getItem("books"));
+    const updatedBooks = data.filter((book) => book.id != id);
+    setBooks(updatedBooks);
+    if (updatedBooks.length === 0) {
+      localStorage.removeItem("books");
+    } else {
+      localStorage.setItem("books", JSON.stringify(updatedBooks));
+    }
     toast.success("Book deleted successfully");
     console.log(id);
   };
+
   const handleUpdate = (book) => {
     setIsModalOpen(true);
     setSelectedBook(book);
@@ -32,7 +35,7 @@ const BookTable = ({ book, setIsModalOpen, setSelectedBook }) => {
           </tr>
         </thead>
         <tbody>
-          {books.map((book) => (
+          {book.map((book) => (
             <tr key={book.id} className="text-sm border-b text-center">
               <td className="py-2 px-4  flex items-center gap-4">
                 <img
