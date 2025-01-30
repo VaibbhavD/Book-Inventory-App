@@ -11,7 +11,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-1 text-white hover:text-gray-200">
             <FaHome /> <span>Home</span>
           </Link>
-          <Link to="/" className="flex items-center space-x-1 text-white hover:text-gray-200">
+          <Link to="/add-book" className="flex items-center space-x-1 text-white hover:text-gray-200">
             <FaBook /> <span>Add Book</span>
           </Link>
         </nav>
