@@ -81,7 +81,7 @@ const BookDetail = () => {
           <img
             src={book.image}
             alt={book.title}
-            className="w-full h-64 object-cover rounded-md mb-4"
+            className="w-full h-64 object-contain rounded-md mb-4"
           />
           <p className="text-gray-700 mb-2">
             <strong>Author:</strong> {book.author}
