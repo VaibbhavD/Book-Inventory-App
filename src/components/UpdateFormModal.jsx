@@ -238,7 +238,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
           <div className="flex justify-between mt-4">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md transition w-full"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold hover:scale-105 py-3 px-4 rounded-lg shadow-md transition w-full"
             >
               ✅ Update Book
             </button>
@@ -247,7 +247,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
         <button
           onClick={closeModal}
-          className="mt-4 text-red-500 w-full text-center block hover:underline"
+          className="mt-4 text-red-500 w-full text-center block hover:underline hover:scale-105"
         >
           ❌ Cancel
         </button>

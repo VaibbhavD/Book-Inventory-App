@@ -168,7 +168,7 @@ const BookForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-primary text-white font-semibold py-3 rounded-lg shadow-md transition"
+          className="w-full bg-primary text-white font-semibold py-3 rounded-lg shadow-md transition hover:scale-105"
         >
           ➕ Add Book
         </button>
