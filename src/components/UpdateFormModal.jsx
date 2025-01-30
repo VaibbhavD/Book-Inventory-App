@@ -10,10 +10,10 @@ const bookTypes = [
   "Sci-Fi",
   "Fantasy",
   "Self-Help",
-  "Computers"
+  "Computers",
 ];
 
-const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
+const UpdateBookModal = ({ book, closeModal, setBooks }) => {
   const [formData, setFormData] = useState({
     id: book.id,
     title: book.title,
@@ -44,9 +44,13 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, image: file });
-      setImagePreview(URL.createObjectURL(file));
+      const render= new FileReader();
+      render.readAsDataURL(file);
+      render.onloadend = () => {
+        setFormData({ ...formData, image: render.result });
+        setImagePreview(render.result);
     }
+  }
   };
 
   const handleRating = (index) => {
@@ -56,9 +60,17 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const booksData = JSON.parse(localStorage.getItem("books")) || [];
+
+    const updatedBooks = booksData.map((item) =>
+      item.id === formData.id ? { ...item, ...formData } : item
+    );
+
+    setBooks(updatedBooks);
+    localStorage.setItem("books", JSON.stringify(updatedBooks));
     toast.success("Book updated successfully");
-    refreshBooks();
-    closeModal();
+    closeModal()
   };
 
   return (
@@ -70,7 +82,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="title"
+              className="block text-gray-600 font-semibold"
+            >
               Book Title
             </label>
             <input
@@ -86,7 +101,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="author" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="author"
+              className="block text-gray-600 font-semibold"
+            >
               Author Name
             </label>
             <input
@@ -102,7 +120,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="image" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="image"
+              className="block text-gray-600 font-semibold"
+            >
               Update Book Cover
             </label>
             <input
@@ -123,7 +144,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="publishedDate" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="publishedDate"
+              className="block text-gray-600 font-semibold"
+            >
               Published Date
             </label>
             <input
@@ -138,7 +162,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="publisher" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="publisher"
+              className="block text-gray-600 font-semibold"
+            >
               Publisher
             </label>
             <input
@@ -153,7 +180,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="description"
+              className="block text-gray-600 font-semibold"
+            >
               Book Description
             </label>
             <textarea
@@ -169,7 +199,10 @@ const UpdateBookModal = ({ book, closeModal, refreshBooks }) => {
           </div>
 
           <div>
-            <label htmlFor="bookType" className="block text-gray-600 font-semibold">
+            <label
+              htmlFor="bookType"
+              className="block text-gray-600 font-semibold"
+            >
               Book Type
             </label>
             <select
