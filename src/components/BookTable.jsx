@@ -2,33 +2,23 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import UpdateBookModal from "./UpdateFormModal";
+import axios from "axios";
 
-const BookTable = () => {
-  const [books, setBooks] = useState([
-    {
-      id: 1,
-      title: { stringValue: "Book 1" },
-      author: { stringValue: "Author 1" },
-      stock: { integerValue: 10 },
-      image: { stringValue: "https://via.placeholder.com/50" },
-    },
-    {
-      id: 2,
-      title: { stringValue: "Book 2" },
-      author: { stringValue: "Author 2" },
-      stock: { integerValue: 10 },
-      image: { stringValue: "https://via.placeholder.com/50" },
-    },
-  ]);
+const BookTable = ({book}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [books, setBooks] = useState(book);
 
+  console.log(books)
+  console.log(book)
   const handleDelete = async (id) => {
     toast.success("Book deleted successfully");
     console.log(id);
   };
-
   const handleUpdate = (book) => {
-    toast.success("Book Updated successfully");
-    console.log(book);
+   setIsModalOpen(true);
+   setSelectedBook(book);
   };
 
   return (
@@ -38,7 +28,7 @@ const BookTable = () => {
           <tr className="bg-stone-100 text-primary">
             <th className="py-2 px-4">Title</th>
             <th className="py-2 px-4">Author</th>
-            <th className="py-2 px-4">Available</th>
+            <th className="py-2 px-4">Publish Date</th>
             <th className="py-2 px-4"></th>
             <th className="py-2 px-4">Actions</th>
           </tr>
@@ -46,16 +36,16 @@ const BookTable = () => {
         <tbody>
           {books.map((book) => (
             <tr key={book.id} className="text-sm border-b text-center">
-              <td className="py-2 px-4  flex items-center gap-2">
+              <td className="py-2 px-4  flex items-center gap-4">
                 <img
-                  src="https://tse1.mm.bing.net/th?id=OIP.VUur7KSOIcdFCTvmXKluSQHaHa&pid=Api&P=0&h=180"
-                  alt={book.title.stringValue}
-                  className="w-10 h-10 rounded"
+                  src={book.image}
+                  alt={book.title}
+                  className="w-20 h-20 rounded border"
                 />
-                {book.title.stringValue}
+                {book.title}
               </td>
-              <td className="py-2 px-4">{book.author.stringValue}</td>
-              <td className="py-2 px-4">{book.stock.integerValue}</td>
+              <td className="py-2 px-4">{book.author}</td>
+              <td className="py-2 px-4">{book.publishedDate}</td>
               <td className="py-2 px-4">
                 <Link
                   to={`/book/${book.id}`}
@@ -82,6 +72,13 @@ const BookTable = () => {
           ))}
         </tbody>
       </table>
+      {isModalOpen && (
+        <UpdateBookModal
+        book={selectedBook}
+        closeModal={() => setIsModalOpen(false)}
+        refreshBooks={() => setBooks([...books])}
+        />
+      )}
     </div>
   );
 };
