@@ -74,11 +74,10 @@ const BookForm = () => {
   );
 
   return (
-    <div className="max-w-lg mx-auto mt-4 p-6 bg-white shadow-xl rounded-lg border border-gray-200">
+    <div className="max-w-lg mx-auto mt-4 p-6 bg-gray-200 shadow-xl rounded-lg border border-gray-200">
       <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
         📚 Add New Book
       </h2>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"

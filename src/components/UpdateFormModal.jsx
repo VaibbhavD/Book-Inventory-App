@@ -72,8 +72,8 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center overflow-auto bg-black bg-opacity-50">
-      <div className="bg-white mt-96 rounded-lg p-6 max-w-xl w-full shadow-lg pt-10 sm:p-4">
+    <div className="fixed h-screen inset-0 flex justify-center items-start overflow-auto bg-black bg-opacity-50">
+      <div className="bg-white h-fit rounded-lg p-10 mt-10 max-w-xl w-full shadow-lg sm:p-4">
         <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
           📘 Update Book
         </h2>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import Popup from "./Popup";
 
 const BookTable = ({ setIsModalOpen, setSelectedBook, setBooks, book }) => {
@@ -63,9 +64,9 @@ const BookTable = ({ setIsModalOpen, setSelectedBook, setBooks, book }) => {
                 <td className="py-2 px-4 text-left">
                   <Link
                     to={`/book/${book.id}`}
-                    className="bg-blue-500 p-2 font-bold rounded-lg text-white text-sm hover:underline hover:scale-110"
+                    className="bg-blue-500 p-2 flex font-bold rounded-lg text-white items-center text-sm hover:scale-110"
                   >
-                    View
+                   <FaEye/> View
                   </Link>
                 </td>
                 <td className="py-2 px-4 space-x-2">

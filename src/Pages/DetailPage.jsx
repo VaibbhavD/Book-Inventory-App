@@ -2,22 +2,24 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa";
-import UpdateBookModal from "../components/UpdateFormModal"; 
+import UpdateBookModal from "../components/UpdateFormModal";
 import Popup from "../components/Popup";
 
 const BookDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
-  const[allbooks,setallBooks]=useState([]);
+  const [allbooks, setallBooks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); 
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const fetchBook = useCallback(() => {
     try {
       const bookData = JSON.parse(localStorage.getItem("books")) || [];
       setallBooks(bookData);
-      const selectedBook = bookData.find((bookItem) => Number(bookItem.id) === Number(id));
+      const selectedBook = bookData.find(
+        (bookItem) => Number(bookItem.id) === Number(id)
+      );
 
       if (!selectedBook) {
         toast.error("Book not found");
@@ -27,11 +29,11 @@ const BookDetail = () => {
     } catch (error) {
       toast.error("Failed to fetch book details");
     }
-  }, [isModalOpen,id]);
+  }, [isModalOpen, id]);
 
   useEffect(() => {
     fetchBook();
-  }, [id,isModalOpen]);
+  }, [id, isModalOpen]);
 
   const updateLocalStorage = useCallback((updatedBooks) => {
     localStorage.setItem("books", JSON.stringify(updatedBooks));
@@ -40,15 +42,17 @@ const BookDetail = () => {
   const confirmDelete = () => {
     try {
       const bookData = JSON.parse(localStorage.getItem("books")) || [];
-      const updatedBooks = bookData.filter((bookItem) => Number(bookItem.id) !== Number(id));
+      const updatedBooks = bookData.filter(
+        (bookItem) => Number(bookItem.id) !== Number(id)
+      );
       updateLocalStorage(updatedBooks);
 
       toast.success("Book deleted successfully");
-      navigate("/"); 
+      navigate("/");
     } catch (error) {
       toast.error("Failed to delete book");
     }
-    setIsDeleteConfirmOpen(false); 
+    setIsDeleteConfirmOpen(false);
   };
 
   return (
@@ -109,7 +113,10 @@ const BookDetail = () => {
 
           {/* Delete Confirmation Modal */}
           {isDeleteConfirmOpen && (
-            <Popup confirmDelete={confirmDelete} setIsDeleteConfirmOpen={setIsDeleteConfirmOpen} />
+            <Popup
+              confirmDelete={confirmDelete}
+              setIsDeleteConfirmOpen={setIsDeleteConfirmOpen}
+            />
           )}
         </div>
       ) : (
