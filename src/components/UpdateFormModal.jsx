@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 
 const bookTypes = [
-  "Fiction",
+  "Crafts & Hobbies",
   "Non-Fiction",
   "Biography",
   "Mystery",
@@ -59,6 +59,11 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.title || !formData.author || !formData.publishedDate || !formData.publisher || !formData.description || !formData.bookType) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
   
     const booksData = JSON.parse(localStorage.getItem("books")) || [];
     const updatedBooks = booksData.map((item) =>
@@ -73,7 +78,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
   return (
     <div className="fixed h-screen inset-0 flex justify-center items-start overflow-auto bg-black bg-opacity-50">
-      <div className="bg-white h-fit rounded-lg p-10 mt-10 max-w-xl w-full shadow-lg sm:p-4">
+      <div className="bg-white h-fit rounded-lg p-10 my-10 max-w-xl w-full shadow-lg sm:p-4">
         <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
           📘 Update Book
         </h2>
@@ -81,7 +86,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="title" className="block text-gray-600 font-semibold">
-              Book Title
+              Book Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -97,7 +102,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
           <div>
             <label htmlFor="author" className="block text-gray-600 font-semibold">
-              Author Name
+              Author Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -113,7 +118,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
           <div>
             <label htmlFor="image" className="block text-gray-600 font-semibold">
-              Update Book Cover
+              Update Book Cover (Optional)
             </label>
             <input
               type="file"
@@ -134,7 +139,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
           <div>
             <label htmlFor="publishedDate" className="block text-gray-600 font-semibold">
-              Published Date
+              Published Date <span className="text-red-500">*</span>
             </label>
             <input
               type="date"
@@ -144,12 +149,13 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
               onChange={handleChange}
               placeholder="YYYY-MM-DD"
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+              required
             />
           </div>
 
           <div>
             <label htmlFor="publisher" className="block text-gray-600 font-semibold">
-              Publisher
+              Publisher <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -159,12 +165,13 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
               onChange={handleChange}
               placeholder="Publisher"
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+              required
             />
           </div>
 
           <div>
             <label htmlFor="description" className="block text-gray-600 font-semibold">
-              Book Description
+              Book Description <span className="text-red-500">*</span>
             </label>
             <textarea
               name="description"
@@ -180,7 +187,7 @@ const UpdateBookModal = ({ book, closeModal, setBooks }) => {
 
           <div>
             <label htmlFor="bookType" className="block text-gray-600 font-semibold">
-              Book Type
+              Book Type <span className="text-red-500">*</span>
             </label>
             <select
               name="bookType"

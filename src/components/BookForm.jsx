@@ -3,9 +3,8 @@ import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// Memoizing book types to prevent unnecessary re-renders
 const bookTypes = [
-  "Fiction",
+  "Crafts & Hobbies",
   "Non-Fiction",
   "Biography",
   "Mystery",
@@ -26,6 +25,7 @@ const BookForm = () => {
     reviews: 0,
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -44,8 +44,9 @@ const BookForm = () => {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          image: reader.result, // Storing base64 string directly in formData
+          image: reader.result,
         }));
+        setImagePreview(reader.result);
       };
     }
   };
@@ -53,13 +54,28 @@ const BookForm = () => {
   const handleRating = (index) => {
     setFormData((prev) => ({
       ...prev,
-      reviews: index, // Directly updating the reviews in formData
+      reviews: index,
     }));
   };
 
   const handleSubmit = useCallback(
-    async (e) => {
+    (e) => {
       e.preventDefault();
+      const { title, author, publishedDate, publisher, description, bookType } =
+        formData;
+
+      if (
+        !title ||
+        !author ||
+        !publishedDate ||
+        !publisher ||
+        !description ||
+        !bookType
+      ) {
+        toast.error("All fields are required except for the image.");
+        return;
+      }
+
       try {
         const storedBooks = JSON.parse(localStorage.getItem("books")) || [];
         storedBooks.push({ ...formData, id: storedBooks.length });
@@ -99,16 +115,18 @@ const BookForm = () => {
           required
         />
 
-        <label className="block text-gray-600 font-semibold">Upload Book Cover:</label>
+        <label className="block text-gray-600 font-semibold">
+          Upload Book Cover (Optional):
+        </label>
         <input
           type="file"
           accept="image/*"
           onChange={handleImageChange}
-          className="w-full p-2 border rounded-lg bg-gray-100"
+          className="w-full p-2 border rounded-lg bg-gray-400 text-white cursor-pointer"
         />
-        {formData.image && (
+        {imagePreview && (
           <img
-            src={formData.image}
+            src={imagePreview}
             alt="Preview"
             className="mt-2 w-24 h-32 object-cover rounded-lg shadow-md"
           />
@@ -163,7 +181,9 @@ const BookForm = () => {
           {[1, 2, 3, 4, 5].map((star) => (
             <FaStar
               key={star}
-              className={`cursor-pointer text-2xl ${formData.reviews >= star ? "text-yellow-500" : "text-gray-300"}`}
+              className={`cursor-pointer text-2xl ${
+                formData.reviews >= star ? "text-yellow-500" : "text-gray-300"
+              }`}
               onClick={() => handleRating(star)}
             />
           ))}
@@ -171,7 +191,7 @@ const BookForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-primary text-white font-semibold py-3 rounded-lg shadow-md transition hover:scale-105"
+          className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg shadow-md transition hover:scale-105"
         >
           ➕ Add Book
         </button>
