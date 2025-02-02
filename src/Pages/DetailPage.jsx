@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa";
+import { FaEdit, FaTrash, FaArrowLeft, FaStar } from "react-icons/fa";
 import UpdateBookModal from "../components/UpdateFormModal";
 import Popup from "../components/Popup";
 
@@ -61,7 +61,7 @@ const BookDetail = () => {
         <div>
           <div className="flex space-x-4 my-2 justify-between">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/")}
               className="text-primary rounded-full bg-gray-100 px-2 py-2 flex items-center space-x-2"
             >
               <FaArrowLeft />
@@ -81,11 +81,11 @@ const BookDetail = () => {
               </button>
             </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{book.title}</h2>
+          <h2 className="text-3xl font-bold my-4">{book.title}</h2>
           <img
             src={book.image}
             alt={book.title}
-            className="w-full h-64 object-contain rounded-md mb-4"
+            className="w-full h-64 object-contain rounded-md my-4"
           />
           <p className="text-gray-700 mb-2">
             <strong>Author:</strong> {book.author}
@@ -96,8 +96,16 @@ const BookDetail = () => {
           <p className="text-gray-700 mb-2">
             <strong>Publisher</strong> {book.publisher}
           </p>
-          <p className="text-gray-700 mb-2">
-            <strong>Reviews:</strong> {book.reviews}
+          <p className="text-gray-700 mb-2 flex">
+            <strong>Reviews: </strong>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <FaStar
+                key={star}
+                className={`cursor-pointer text-2xl ${
+                  book.reviews >= star ? "text-yellow-500" : "text-gray-300"
+                }`}
+              />
+            ))}
           </p>
           <p className="text-gray-700">
             <strong>Description:</strong> {book.description}
