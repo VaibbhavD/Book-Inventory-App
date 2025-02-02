@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaHome, FaBook } from 'react-icons/fa';
+import img from "../../public/image.png"
 
 const Header = () => {
   return (
     <header className="bg-primary text-white p-4">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-semibold">Book Inventory</h1>
+      <div className="max-w-8xl mx-auto md:mx-10 flex justify-between items-center">
+        <h1 className="text-xl font-semibold flex gap-2"><img src={img} width={30} loading='lazy'/>Bookventory</h1>
         <nav className="flex items-center space-x-2 sm:space-x-4 md:space-x-8">
           <Link
             to="/"
