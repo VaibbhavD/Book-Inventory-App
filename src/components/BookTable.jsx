@@ -71,7 +71,7 @@ const BookTable = ({ setIsModalOpen, setSelectedBook, setBooks, book }) => {
               <tr key={book.id} className="border-b text-center">
                 <td className="py-3 px-4">
                   <img
-                    src={book.image}
+                    src={book.image?book.image:"https://static.vecteezy.com/system/resources/previews/024/043/963/original/book-icon-clipart-transparent-background-free-png.png"}
                     alt={book.title}
                     className="w-16 h-16 md:w-20 md:h-20 object-cover rounded border mx-auto"
                     loading="lazy"

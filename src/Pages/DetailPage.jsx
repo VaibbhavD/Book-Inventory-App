@@ -83,7 +83,11 @@ const BookDetail = () => {
           </div>
           <h2 className="text-3xl font-bold my-4">{book.title}</h2>
           <img
-            src={book.image}
+            src={
+              book.image
+                ? book.image
+                : "https://static.vecteezy.com/system/resources/previews/024/043/963/original/book-icon-clipart-transparent-background-free-png.png"
+            }
             alt={book.title}
             className="w-full h-64 object-contain rounded-md my-4"
           />
