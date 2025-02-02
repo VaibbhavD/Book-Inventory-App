@@ -12,7 +12,7 @@ function Home() {
   const fetchBooks = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://www.googleapis.com/books/v1/volumes?q=javascript"
+        "https://www.googleapis.com/books/v1/volumes?q=quilting"
       );
       const fetchedBooks = response.data.items.map((item, index) => ({
         id: index,
@@ -27,6 +27,7 @@ function Home() {
         reviews: Math.floor(Math.random() * 5),
         bookType: item.volumeInfo.categories[0] || "N/A",
       }));
+      console.log(fetchBooks);
       setBooks(fetchedBooks);
       localStorage.setItem("books", JSON.stringify(fetchedBooks));
       setLoading(false);
@@ -49,7 +50,7 @@ function Home() {
   return (
     <div>
       {loading ? (
-        <Loader/>
+        <Loader />
       ) : (
         <BookTable
           book={books}
